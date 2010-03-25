@@ -1,0 +1,9 @@
+ Awake -- Short program (library) to "wake on lan" a remote host.
+=================================================================
+
+A very short script to wake up remote hosts,
+you can imported and use the wol function or
+use the command line interface.
+
+If you  want to know something more about the WoL stuff
+check http://en.wikipedia.org/wiki/Wake-on-LAN.
