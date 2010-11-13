@@ -7,3 +7,9 @@ use the command line interface.
 
 If you  want to know something more about the WoL stuff
 check http://en.wikipedia.org/wiki/Wake-on-LAN.
+
+
+=======Nov-13-2010=====================
+The wol funcion y now in the wol module.
+=======================================
+
