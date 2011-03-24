@@ -43,32 +43,40 @@ def file_parser(fname, sep='\n'):
             
 
 def main():
-    parser = OptionParser(usage='usage: %prog [options] MAC1 [MAC2 MAC3 MAC...]')
+    usage = 'usage: %prog [options] MAC1 [MAC2 MAC3 MAC...]'
+    parser = OptionParser(usage=usage)
     parser.add_option('-p', '--port', dest='port', default=9, type='int',
-                      help='Destination port, only 0, 7 or 9. (Default 9)')
+                      help='Destination port. (Default 9)')
 
+    bhelp = 'Broadcast ip of the network. (Default 255.255.255.255)'
     parser.add_option('-b', '--broadcast', dest='broadcast',
                       default='255.255.255.255', type='string',
-                      help='Broadcast ip of the network. (Default 255.255.255.255)')
+                      help=bhelp)
+
+    fhelp = 'Use a file with the list of macs, separated with -s, by default \n.'
     parser.add_option('-f', '--file', dest='file', type='string', 
-                      help='Use a file with the list of macs, separated with -s, by default \n.')
+                      help=fhelp)
+
+    shelp = 'Pattern to be use as a separator with the -f option.'
     parser.add_option('-s', '--separator', dest='separator', type='string',
-                      default='\n', help='Pattern to be use as a separator with the -f option.')
-    parser.add_option('-q', '--quiet',action='store_true', help='Do not output informative messages.', default=False)
+                      default='\n', help=shelp)
+    
+    parser.add_option('-q', '--quiet', action='store_true',
+                      help='Do not output informative messages.',
+                      default=False)
 
     options, args = parser.parse_args()
 
     if not options.file and len(args) < 1:
-        parser.error('Requires at least one MAC address or a list of MAC (-f).')
-
-    iprex = re.compile(r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b')
+        _errmsg = 'Requires at least one MAC address or a list of MAC (-f).'
+        parser.error(_errmsg)
+    regx = r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'\
+           r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'
+    iprex = re.compile(regx)
 
     if not iprex.match(options.broadcast):
         parser.error('Invalid broadcast ip')
 
-    if options.port not in [0, 7, 9]:
-        parser.error('Invalid port, only supports 0, 7 or 9.')
-        
     macrex = re.compile(r'^([0-9a-fA-F]{2}([:-]|$)){6}$')
     l = len(args)
 
@@ -87,7 +95,8 @@ def main():
         if macrex.match(mac):
             wol.wol(mac, options.broadcast, options.port)
             if not options.quiet:
-                print 'Sending magick packet to %s with MAC  %s and port %d'%(options.broadcast, mac, options.port )
+                print 'Sending magick packet to %s with MAC  %s and port %d' % \
+                      (options.broadcast, mac, options.port )
         else:
             if l == 1:
                 parser.error('Invalid mac %s'%mac)

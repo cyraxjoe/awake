@@ -22,7 +22,8 @@ import struct
 def wol(mac, broadcast='255.255.255.255', port=9):
     """ Send  "magick packet" to the given mac to wakeup the host."""
     magic_pkt = ''.join([struct.pack('6B', *[0xff] * 6),
-                         struct.pack('96B',*[int(d, 16) for d in mac.split(':')] * 16)])
+                         struct.pack('96B', *[int(d, 16)
+                                              for d in mac.split(':')] * 16)])
     sok = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sok.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     sok.connect((broadcast, port))

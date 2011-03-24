@@ -1,5 +1,5 @@
  Awake -- Short program (library) to "wake on lan" a remote host.
-=================================================================
+-----------------------------------------------------------------
 
 A very short script to wake up remote hosts,
 you can import and use the wol function or
@@ -9,7 +9,5 @@ If you  want to know something more about the WoL stuff
 check http://en.wikipedia.org/wiki/Wake-on-LAN.
 
 
-=======Nov-13-2010=====================
-The wol funcion is now in the wol module.
-=======================================
+
 
