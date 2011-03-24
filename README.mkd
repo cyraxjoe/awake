@@ -6,7 +6,7 @@ you can import and use the wol function or
 use the command line interface.
 
 If you  want to know something more about the WoL stuff
-check http://en.wikipedia.org/wiki/Wake-on-LAN.
+check [the wikipedia page](http://en.wikipedia.org/wiki/Wake-on-LAN).
 
 
 
