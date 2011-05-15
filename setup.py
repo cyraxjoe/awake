@@ -1,18 +1,14 @@
 from distutils.core import setup
-from glob import glob
-
-
 
 setup(name='awake',
-      version='1.0',
+      version='0.6',
       author='Joel Rivera',
       author_email='joelriv@gmail.com',
-      provides='wol',
       license='GPL',
       package_dir={'':'lib/'},
       scripts=['awake.py',],
       py_modules=['wol',],
-      classifiers=['Enviroment :: Console',
-                   'Operating System :: Os independent',],
-      description='Wake on lan'
+      classifiers=['Environment :: Console',
+                   'Operating System :: OS Independent'],
+      description='Command line program to wake-on-lan a remote host.'
       )
