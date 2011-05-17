@@ -14,7 +14,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from __future__ import with_statement
 import sys
 import re
 from optparse import OptionParser
@@ -24,17 +23,12 @@ import wol
 def file_parser(fname, sep='\n'):
     """Parses the content of a file <fname>, returning the
     content separated with <sep>"""
-    
-    if int(sys.version[2]) < 5:
-        chunks = []
-        file_ = open(fname)
-        for chunk in file_.read().split(sep):
-            if chunk:
-                chunks.append(chunk.strip())
-        file_.close()
-    else:
-        with open(fname) as file_:
-            chunks = [c.strip() for c in file_.read().split(sep) if c]
+    chunks = []
+    file_ = open(fname)
+    for chunk in file_.read().split(sep):
+        if chunk:
+            chunks.append(chunk.strip())
+    file_.close()
             
     if not chunks:
         raise Exception('No macs coud be found in file %s' % fname)
