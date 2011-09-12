@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='awake',
-      version='0.6.1',
+      version='0.7',
       author='Joel Rivera',
       author_email='joelriv@gmail.com',
       url='http://github.com/cyraxjoe/awake',

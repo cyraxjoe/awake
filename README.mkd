@@ -1,13 +1,46 @@
  Awake -- Short program (library) to "wake on lan" a remote host.
 -----------------------------------------------------------------
 
-A very short script to wake up remote hosts,
-you can import and use the wol function or
+A very short script to wake up remote hosts, you can import and use the wol function or
 use the command line interface.
 
-If you  want to know something more about the WoL stuff
-check [the wikipedia page](http://en.wikipedia.org/wiki/Wake-on-LAN).
+If you  want to know something more about the WoL stuff check [the wikipedia page](http://en.wikipedia.org/wiki/Wake-on-LAN).
 
 
+    Usage: awake.py [options] MAC1 [MAC2 MAC3 MAC...]
+
+    Options:
+      -h, --help            show this help message and exit
+      -p PORT, --port=PORT  Destination port. (Default 9)
+      -b BROADCAST, --broadcast=BROADCAST
+                            Broadcast ip of the network. (Default 255.255.255.255)
+      -a ADDRESS, --address=ADDRESS
+                            Address to connect and send the packet, by default use
+                            the broadcast.
+      -f FILE, --file=FILE  Use a file with the list of macs, separated with -s,
+                            by default \n.
+      -s SEPARATOR, --separator=SEPARATOR
+                            Pattern to be use as a separator with the -f option.
+      -q, --quiet           Do not output informative messages.
 
 
+Examples
+--------
+
+__1.__ Wake-on-lan a group of computers in the current network:
+
+    awake.py MAC1 MAC2 MAC3 MAC4 MACn
+
+or
+  
+    awake.py -f ~/list_of_macs
+
+and in the file `list_of_macs` have one MAC per line or use the `-s` option.
+
+__2.__ Wake-on-lan a computer or group of computers in a extenal network:
+
+   For this situation, you need to forward a port in your router, for example to forward 9999 to 9 in the localnetwork o 7777 to 7, check the documentation if your router or modem. After the port has been configured you can use [DDNS](http://en.wikipedia.org/wiki/DDNS) to have a reference to the current ip address of your router/modem and use awake in this way:
+
+    awake.py -a myhouse.homedns.com -p 9999 -f ~/file_with_my_macs 
+   
+   or use any other option, the importan here is to use the `-a` and `-p` options to specify the destination to send the magick packet.
