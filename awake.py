@@ -46,6 +46,9 @@ def main():
     parser.add_option('-b', '--broadcast', dest='broadcast',
                       default='255.255.255.255', type='string',
                       help=bhelp)
+    
+    parser.add_option('-a', '--address', dest='address', default=None,
+                      help='Address to connect and send the packet, defaults to the broadcast')
 
     fhelp = 'Use a file with the list of macs, separated with -s, by default \n.'
     parser.add_option('-f', '--file', dest='file', type='string', 
@@ -87,7 +90,7 @@ def main():
         
     for mac in macs:
         if macrex.match(mac):
-            wol.wol(mac, options.broadcast, options.port)
+            wol.wol(mac, options.broadcast, options.address, options.port)
             if not options.quiet:
                 print 'Sending magick packet to %s with MAC  %s and port %d' % \
                       (options.broadcast, mac, options.port )
