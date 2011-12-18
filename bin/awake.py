@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-#Short program (library) to "wake on lan"  a remote host.
-#    Copyright (C) 2010  Joel Juvenal Rivera Rivera  joelriv@gmail.com
+#Awake: Short program (library) to "wake on lan"  a remote host.
+#    Copyright (C) 2011  Joel Juvenal Rivera Rivera rivera@joel.mx
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -34,11 +34,10 @@ def file_parser(fname, sep='\n'):
         raise Exception('No macs coud be found in file %s' % fname)
     else:
         return chunks
-            
 
-def main():
+def _build_cli():
     usage = 'usage: %prog [options] MAC1 [MAC2 MAC3 MAC...]'
-    parser = OptionParser(usage=usage)
+    parser = OptionParser(usage=usage, version='%%prog: %s' % wol.__version__)
     parser.add_option('-p', '--port', dest='port', default=9, type='int',
                       help='Destination port. (Default 9)')
 
@@ -65,11 +64,19 @@ def main():
                       help='Do not output informative messages.',
                       default=False)
 
-    options, args = parser.parse_args()
+    return parser
+    
+            
 
+def main():
+    parser = _build_cli()
+    options, args = parser.parse_args()
+    
     if not options.file and len(args) < 1:
         _errmsg = 'Requires at least one MAC address or a list of MAC (-f).'
+        parser.print_help()
         parser.error(_errmsg)
+
     regx = r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'\
            r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'
     iprex = re.compile(regx)
@@ -78,9 +85,9 @@ def main():
         parser.error('Invalid broadcast ip')
 
     macrex = re.compile(r'^([0-9a-fA-F]{2}([:-]|$)){6}$')
-    l = len(args)
+    largs = len(args)
 
-    if l > 0:
+    if largs > 0:
         macs = args
     else:
         macs = []
@@ -98,10 +105,10 @@ def main():
                 print 'Sending magick packet to %s with MAC  %s and port %d' % \
                       (options.broadcast, mac, options.port )
         else:
-            if l == 1:
-                parser.error('Invalid mac %s'%mac)
+            if largs == 1:
+                parser.error('Invalid mac %s' % mac)
             else:
-                print >> sys.stderr, 'Invalid mac %s'%mac
+                print >> sys.stderr, 'Invalid mac %s' % mac
 
 
 if __name__ == '__main__':
