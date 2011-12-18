@@ -16,7 +16,7 @@ classifiers=['Environment :: Console',
              'Programming Language :: Python :: 2.5',
              'Programming Language :: Python :: 2.6',
              'Programming Language :: Python :: 2.7',
-             'Programming Language :: Python :: Only',
+             'Programming Language :: Python :: 2 :: Only',
              'Intended Audience :: End Users/Desktop',
              'Intended Audience :: Developers',
              'Intended Audience :: System Administrators']
