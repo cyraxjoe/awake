@@ -14,15 +14,18 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import warnings
+import sys
+
 from optparse import OptionParser
 
 import awakelib
+
 from awakelib import utils
 from awakelib import wol
 
 
-def _build_cli():
+
+def _build_parser():
     usage = 'usage: %prog [options] MAC1 [MAC2 MAC3 MAC...]'
     parser = OptionParser(usage=usage, version='%%prog: %s' % awakelib.__version__)
     parser.add_option('-p', '--port', dest='port', default=9, type='int',
@@ -35,7 +38,7 @@ def _build_cli():
 
     ahelp='Address to connect and send the packet,' \
           ' by default use the broadcast.'
-    parser.add_option('-a', '--address', dest='address', default=None,
+    parser.add_option('-d', '--destination', dest='destination', default=None,
                       help=ahelp)
 
     fhelp = 'Use a file with the list of macs,' \
@@ -47,47 +50,70 @@ def _build_cli():
     parser.add_option('-s', '--separator', dest='separator', type='string',
                       default='\n', help=shelp)
     
-    parser.add_option('-q', '--quiet', action='store_true',
+    parser.add_option('-q', '--quiet', dest='quiet_mode', action='store_true',
                       help='Do not output informative messages.',
                       default=False)
 
     return parser
-    
 
 
-def main():
-    parser = _build_cli()
-    options, args = parser.parse_args()
-    
+def _get_macs(options, args):
+    macs = []
     if not options.file and len(args) < 1:
-        _errmsg = 'Requires at least one MAC address or a list of MAC (-f).'
-        parser.print_help()
-        parser.error(_errmsg)
-
-
-    if len(args) > 0:
-        macs = args
-    else:
-        macs = []
+        errmsg = 'Requires at least one MAC address or a list of MAC (-f).'
+        _notify_error_and_finish(errmsg)
         
-    if options.file:
-        macs += utils.fetch_macs_from_file(options.file, options.separator)
+    if len(args): 
+        macs += args
+
+    if options.file: 
+        try:
+            macs += utils.fetch_macs_from_file(options.file,
+                                               options.separator)
+        except Exception:
+            exep = utils.fetch_last_exception()
+            sys.stderr.write('%s\n' % exep.args)
+            
+    return macs
         
+
+def _send_packets(macs, broadcast, destination, port, quiet_mode):
     for mac in macs:
-        wol.send_magic_packet(mac, options.broadcast,
-                              options.address,
-                              options.port)
-        if not options.quiet:
-            print('Sending magick packet to %s with MAC  %s and port %d' % \
-                  (options.broadcast, mac, options.port ))
+        try:
+            wol.send_magic_packet(mac, broadcast, destination, port)
+        except ValueError:
+            exep = utils.fetch_last_exception()
+            sys.stderr.write('%s\n' % exep.args[0])
+            
         else:
-            if len(args) == 1:
-                parser.error('Invalid mac %s' % mac)
-            else:
-                warnings.warn('Invalid mac %s' % mac, SyntaxWarning)
+            if not quiet_mode:
+                print('Sending magic packet to %s with MAC  %s and port %d' % \
+                      (broadcast, mac, port))
 
 
+def main(options, args):
+    try:
+        macs = _get_macs(options, args)
+    except Exception:
+        exep = utils.get_last_exception()
+        _notify_error_and_finish(exep.args)
+
+    if macs:
+        _send_packets(macs, options.broadcast, options.destination,
+                      options.port, options.quiet_mode)
+    else:
+        _notify_error_and_finish('Unable to acquire any mac address')
+
+
+def _notify_error_and_finish(message):
+    # parser is defined in the global scope at the bottom.
+    parser.print_help() 
+    parser.error(message)
+
+    
 if __name__ == '__main__':
-    main()
+    parser = _build_parser()
+    options, args = parser.parse_args()
+    main(options, args)
     
 
