@@ -16,7 +16,7 @@ class TestCli(unittest.TestCase):
     def test_bad_mac_in_the_middle_of_args(self):
         pass
     
-    def test_verbose_option(self):
+    def test_quiet_option(self):
         pass
 
     def test_help_option(self):

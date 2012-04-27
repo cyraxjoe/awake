@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #Awake: Short program (library) to "wake on lan"  a remote host.
-#    Copyright (C) 2011  Joel Juvenal Rivera Rivera rivera@joel.mx
+#    Copyright (C) 2012  Joel Juvenal Rivera Rivera rivera@joel.mx
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -14,30 +14,17 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import sys
-import re
+import warnings
 from optparse import OptionParser
 
-import wol
+import awakelib
+from awakelib import utils
+from awakelib import wol
 
-def file_parser(fname, sep='\n'):
-    """Parses the content of a file <fname>, returning the
-    content separated with <sep>"""
-    chunks = []
-    file_ = open(fname)
-    for chunk in file_.read().split(sep):
-        if chunk:
-            chunks.append(chunk.strip())
-    file_.close()
-            
-    if not chunks:
-        raise Exception('No macs coud be found in file %s' % fname)
-    else:
-        return chunks
 
 def _build_cli():
     usage = 'usage: %prog [options] MAC1 [MAC2 MAC3 MAC...]'
-    parser = OptionParser(usage=usage, version='%%prog: %s' % wol.__version__)
+    parser = OptionParser(usage=usage, version='%%prog: %s' % awakelib.__version__)
     parser.add_option('-p', '--port', dest='port', default=9, type='int',
                       help='Destination port. (Default 9)')
 
@@ -66,7 +53,7 @@ def _build_cli():
 
     return parser
     
-            
+
 
 def main():
     parser = _build_cli()
@@ -77,38 +64,27 @@ def main():
         parser.print_help()
         parser.error(_errmsg)
 
-    regx = r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'\
-           r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'
-    iprex = re.compile(regx)
 
-    if not iprex.match(options.broadcast):
-        parser.error('Invalid broadcast ip')
-
-    macrex = re.compile(r'^([0-9a-fA-F]{2}([:-]|$)){6}$')
-    largs = len(args)
-
-    if largs > 0:
+    if len(args) > 0:
         macs = args
     else:
         macs = []
         
     if options.file:
-        try:
-            macs += file_parser(options.file, options.separator)
-        except Exception, e:
-            print >> sys.stderr, e
+        macs += utils.fetch_macs_from_file(options.file, options.separator)
         
     for mac in macs:
-        if macrex.match(mac):
-            wol.wol(mac, options.broadcast, options.address, options.port)
-            if not options.quiet:
-                print 'Sending magick packet to %s with MAC  %s and port %d' % \
-                      (options.broadcast, mac, options.port )
+        wol.send_magic_packet(mac, options.broadcast,
+                              options.address,
+                              options.port)
+        if not options.quiet:
+            print('Sending magick packet to %s with MAC  %s and port %d' % \
+                  (options.broadcast, mac, options.port ))
         else:
-            if largs == 1:
+            if len(args) == 1:
                 parser.error('Invalid mac %s' % mac)
             else:
-                print >> sys.stderr, 'Invalid mac %s' % mac
+                warnings.warn('Invalid mac %s' % mac, SyntaxWarning)
 
 
 if __name__ == '__main__':

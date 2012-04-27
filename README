@@ -36,38 +36,44 @@ which is equivalent to::
 
 and in the file `list_of_macs` have one MAC per line or use the `-s` option.
 
-*Wake-on-lan a computer or group of computers in a extenal network*
+*Wake-on-lan a computer or group of computers in a external network*
 
 For this situation, you need to forward a port in your router, for example to
-forward 9999 to 9 in the localnetwork o 7777 to 7, check the documentation if 
+forward 9999 to 9 in the local network o 7777 to 7, check the documentation if 
 your router or modem. After the port has been configured you can use `DDNS`_
 to have a reference to the current ip address of your router/modem and use awake
 in this way::
 
     awake.py -a myhouse.homedns.com -p 9999 -f ~/file_with_my_macs 
    
-or use any other option, the importan here is to use the `-a` and `-p` options 
+or use any other option, the important here is to use the `-a` and `-p` options 
 to specify the destination to send the magic packet.
 
 
 As a library
 ------------
 
-The real functionality of the wake-on-lan is provided from a short function 
-that is implemented in the provided module `wol`::
+.. WARNING::
+   You should be aware that the current readme file is exposed in the
+   github page and in the `pypi`_ page, but please refer to `pypi`_,
+   to make sure that the api and the version are consistent.
 
-    wol(mac, broadcast='255.255.255.255', dest=None, port=9)
-        Send  a "magic packet" to the given destination mac to wakeup 
+The real functionality of the wake-on-lan is provided from a short function 
+that is implemented in the provided module `awakelib.wol`::
+
+    send_magic_packet(mac, broadcast='255.255.255.255', dest=None, port=9)
+        Send  a "magic packet" to the given destination mac to wake up 
         the host, if `dest` is not specified then the packed is broadcasted.
 
 
 Apart from the awake script the WOL functionality can be easily integrated
 in your python programs with a simple call to the function like::
 
-    import wol
+    from awakelib import wol
+
     def sysadmin_function_x(mac, *args):
         # some stuff...
-        wol.wol(mac)
+        wol.send_magic_packet(mac)
         # some more stuff...
     
 
@@ -79,3 +85,4 @@ For any improvement or bug, feel free to create an `issue`_ in the github projec
 .. _the wikipedia page: http://en.wikipedia.org/wiki/Wake-on-LAN
 .. _DDNS: http://en.wikipedia.org/wiki/DDNS
 .. _issue: http://github.com/cyraxjoe/awake/issues
+.. _pypi: http://pypi.python.org/pypi/awake
