@@ -3,9 +3,8 @@
 #    Copyright (C) 2012  Joel Juvenal Rivera Rivera rivera@joel.mx
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#    it under the terms of the GNU General Public License version 3
+#    as published by the Free Software Foundation.
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -36,10 +35,10 @@ def _build_parser():
                       default='255.255.255.255', type='string',
                       help=bhelp)
 
-    ahelp='Address to connect and send the packet,' \
-          ' by default use the broadcast.'
+    dhelp = 'Destination ip/domain to connect and send the packet, ' \
+            'by default use broadcast.'
     parser.add_option('-d', '--destination', dest='destination', default=None,
-                      help=ahelp)
+                      help=dhelp)
 
     fhelp = 'Use a file with the list of macs,' \
             ' separated with -s, by default \\n.'

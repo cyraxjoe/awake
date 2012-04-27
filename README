@@ -14,9 +14,9 @@ If you  want to know something more about the WoL stuff check
           -p PORT, --port=PORT  Destination port. (Default 9)
           -b BROADCAST, --broadcast=BROADCAST
                                 Broadcast ip of the network. (Default 255.255.255.255)
-          -a ADDRESS, --address=ADDRESS
-                                Address to connect and send the packet, by default use
-                                the broadcast.
+          -d DESTINATION, --destination=DESTINATION
+	                        Destination ip/domain to connect and send the packet,
+				by default use broadcast.
           -f FILE, --file=FILE  Use a file with the list of macs, separated with -s,
                                 by default \n.
           -s SEPARATOR, --separator=SEPARATOR
@@ -54,6 +54,7 @@ As a library
 ------------
 
 .. WARNING::
+
    You should be aware that the current readme file is exposed in the
    github page and in the `pypi`_ page, but please refer to `pypi`_,
    to make sure that the api and the version are consistent.
