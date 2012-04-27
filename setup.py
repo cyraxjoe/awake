@@ -8,7 +8,6 @@ readme = open(os.path.join(repodir, 'README.rst'))
 
 version = '0.7.1'
 longdesc = readme.read()
-scripts = [os.path.join(repodir, 'bin', 'awake.py'),]
 classifiers=['Environment :: Console',
              'Operating System :: OS Independent',
              'License :: OSI Approved :: GNU General Public License (GPL)',
@@ -32,7 +31,7 @@ setup(name='awake',
       download_url='http://github.com/cyraxjoe/awake/tarball/v%s' % version,
       license='GPL',
       package_dir={'': 'lib'},
-      scripts=scripts,
+      scripts=['bin/awake.py',],
       py_modules=['wol',],
       provides=['wol',],
       classifiers=classifiers,
