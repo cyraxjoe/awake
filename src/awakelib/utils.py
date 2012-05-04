@@ -42,14 +42,19 @@ def _is_hexnumber(number):
         return False
 
     
-def _strip_separator_from_mac(mac):    
+def _strip_separator_from_mac(mac):
+    # if is python2, convert to unicode to have
+    # the right length in a character context.
+    if sys.version_info[0] == 2:
+        mac = mac.decode('utf-8')
+    
     if len(mac) == 12:
         return mac
     elif len(mac) == 12 + 5:
         separator = mac[2]
         return mac.replace(separator, '')
     else:
-        raise ValueError('Invalid MAC %s' % mac)
+        raise ValueError('Invalid MAC %s [len %s]' % (mac, len(mac)))
 
 
 def fetch_last_exception():
@@ -63,6 +68,23 @@ def is_valid_broadcast_ip(broadcast, rex=brorex):
 
 
 def retrive_MAC_digits(mac):
+    """Receives a string representing `mac` address
+    with one or none separator for each two digits
+    in the hex number.
+       
+    Valid:  aa:aa:aa:aa:aa:11
+            aa-aa-AA-AA-aa-11
+            FF@ff@AA@55@aa@11
+            aaaaaaaaaa11
+    Invalid:
+            11:11:11:11-11-11
+            11:11:11:111111
+            11::11:11:11:11:11
+
+   Return each two digits in a list.
+   ValueError gets raises in case that the `mac` does
+   not fulfill the requirements to be valid.
+   """
     plain_mac = _strip_separator_from_mac(mac)
     if _is_hexnumber(plain_mac):
         hexpairs = zip(plain_mac[::2],
