@@ -1,6 +1,6 @@
 import os
 
-from distutils.core import setup
+from setuptools import setup
 
 
 repodir = os.path.dirname(os.path.realpath(__file__))
@@ -33,7 +33,7 @@ setup(name='awake',
       download_url='http://github.com/cyraxjoe/awake/tarball/v%s' % version,
       license='GPLv3',
       package_dir={'': 'src'},
-      scripts=['bin/awake.py',],
+      scripts=['src/scripts/awake.py',],
       packages=['awakelib',],
       provides=['awake',],
       classifiers=classifiers,

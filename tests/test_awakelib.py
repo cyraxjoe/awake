@@ -67,9 +67,22 @@ class TestMACFormat(unittest.TestCase):
         self._test_chars(uchars)
         
         
-
-
-
 class TestUtils(unittest.TestCase):
     pass
 
+
+class TestWOL(unittest.TestCase):
+
+    def test_invalid_mac(self):
+        raise NotImplementedError()
+
+    def test_invalid_broadcast(self):
+        raise NotImplementedError()
+
+    def test_invalid_dest(self):
+        raise NotImplementedError()
+
+    def test_invalid_port(self):
+        raise NotImplementedError()
+    
+    

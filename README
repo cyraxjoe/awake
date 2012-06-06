@@ -78,6 +78,25 @@ in your python programs with a simple call to the function like::
         # some more stuff...
     
 
+Tests
+-----
+
+The tests are designed to be executed with the python unittest module,
+you can run the tests from the root of the repository with this command::
+
+    python -m unittest discover 
+
+In case that you want to run the tests in python < 2.7, you will need the 
+`unittest2`_ module.
+
+The general recommended process to develop is using `virtualenv`_ and after creating the
+environ just run::
+
+    ./environ/bin/python setup.py develop
+    ./environ/bin/python -m unittest discover 
+
+
+
 Improvements, bugs?
 -------------------
 
@@ -87,3 +106,5 @@ For any improvement or bug, feel free to create an `issue`_ in the github projec
 .. _DDNS: http://en.wikipedia.org/wiki/DDNS
 .. _issue: http://github.com/cyraxjoe/awake/issues
 .. _pypi: http://pypi.python.org/pypi/awake
+.. _unittest2: http://pypi.python.org/pypi/unittest2
+.. _virtualenv: http://pypi.python.org/pypi/virtualenv

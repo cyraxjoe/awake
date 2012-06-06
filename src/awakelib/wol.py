@@ -24,6 +24,8 @@ def send_magic_packet(mac, broadcast='255.255.255.255', dest=None, port=9):
 
     If the `mac` address is unable to be parsed
     `ValueError` get raised. (yes it rhymes).
+
+    If `dest` is not a valid domain name or ip raise socket.error.
     """
     if not utils.is_valid_broadcast_ip(broadcast):
         raise ValueError('Invalid broadcast %s' % broadcast)

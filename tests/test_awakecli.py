@@ -22,9 +22,8 @@ class TestCli(unittest.TestCase):
         
 
     def _execute(self, *args):
-        cmd = [self.awake_path, ]
-        cmd += args
-        return subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        cmd = [self.awake_path, ] + list(args)
+        return subprocess.check_output(cmd, stderr=subprocess.STDOUT).decode()
     
     
     def test_invalid_options(self):
@@ -41,7 +40,7 @@ class TestCli(unittest.TestCase):
             
 
     def test_missing_required_argument(self):
-        pass
+        raise NotImplementedError()
 
     def test_1000_macs_in_args(self):
         sample_mac = '1c:6f:66:31:e2:5f'
@@ -52,56 +51,87 @@ class TestCli(unittest.TestCase):
                          '  %s and port 9' % sample_mac),] * 1000
         exp_output = '%s\n' % '\n'.join(exp_messages)
 
-        output = self._execute(*macs).decode()
+        output = self._execute(*macs)
         self.assertEqual(output, exp_output)
 
 
     def test_bad_mac_in_the_middle_of_args(self):
-        pass
+        macs = ['1c:6f:66:31:e2:5f',
+                '1c:6f:66:31:e2:53',
+                '1c:6f:66:31:e2:5X', # badmac
+                '1c:6f:66:31:e2:11']
+        
+        expoutput = 'Invalid MAC 1c:6f:66:31:e2:5X'
+        self.assertIn(expoutput, self._execute(*macs))
     
     def test_quiet_option(self):
-        pass
+        sample_mac = '1c:6f:66:31:e2:5f'
+        cmdargs = ['-q', sample_mac]
+        
+        output = self._execute(*cmdargs).strip()
+        self.assertEqual(output, '')
+
 
     def test_help_option(self):
-        pass
+        exp_output = \
+        """Usage: awake.py [options] MAC1 [MAC2 MAC3 MAC...]
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -p PORT, --port=PORT  Destination port. (Default 9)
+  -b BROADCAST, --broadcast=BROADCAST
+                        Broadcast ip of the network. (Default 255.255.255.255)
+  -d DESTINATION, --destination=DESTINATION
+                        Destination ip/domain to connect and send the packet,
+                        by default use broadcast.
+  -f FILE, --file=FILE  Use a file with the list of macs, separated with -s,
+                        by default \\n.
+  -s SEPARATOR, --separator=SEPARATOR
+                        Pattern to be use as a separator with the -f option.
+  -q, --quiet           Do not output informative messages.
+"""
+        output = self._execute('--help')
+        self.assertEqual(output, exp_output)
+
 
     def test_dest_option(self):
-        pass
+        raise NotImplementedError()
 
     def test_port_option(self):
-        pass
+        raise NotImplementedError()
 
     def test_file_option(self):
-        pass
+        raise NotImplementedError()
 
     def test_file_option_and_args(self):
-        pass
+        raise NotImplementedError()
 
     def test_separation_option(self):
-        pass
+        raise NotImplementedError()
     
 
     def test_multiple_file_options(self):
-        pass
+        raise NotImplementedError()
 
 
 
 
 class TestFileOfMacsInCLI(unittest.TestCase):
     def test_big_file(self):
-        pass
+        raise NotImplementedError()
 
 
     def test_not_exists_file(self):
-        pass
+        raise NotImplementedError()
 
 
     def test_unable_to_read_file(self):
-        pass
+        raise NotImplementedError()
 
     
     def test_bad_macs_in_file(self):
-        pass
+        raise NotImplementedError()
     
         
 
