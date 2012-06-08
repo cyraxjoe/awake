@@ -27,8 +27,11 @@ def send_magic_packet(mac, broadcast='255.255.255.255', dest=None, port=9):
 
     If `dest` is not a valid domain name or ip raise socket.error.
     """
-    if not utils.is_valid_broadcast_ip(broadcast):
-        raise ValueError('Invalid broadcast %s' % broadcast)
+    try:
+        if not utils.is_valid_broadcast_ip(broadcast):
+            raise ValueError('Invalid broadcast %s' % broadcast)
+    except TypeError:
+        raise ValueError('Invalid broadcast %r' % broadcast)
     
     mac_digits = utils.retrive_MAC_digits(mac)
     

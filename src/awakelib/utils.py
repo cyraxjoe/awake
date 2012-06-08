@@ -47,7 +47,7 @@ def _strip_separator_from_mac(mac):
     # the right length in a character context.
     if sys.version_info[0] == 2:
         mac = mac.decode('utf-8')
-    
+
     if len(mac) == 12:
         return mac
     elif len(mac) == 12 + 5:
@@ -64,7 +64,8 @@ def fetch_last_exception():
 
 
 def is_valid_broadcast_ip(broadcast, rex=brorex):
-    return rex.match(broadcast)
+    return bool(not broadcast.startswith('0.') and \
+                rex.match(broadcast))
 
 
 def retrive_MAC_digits(mac):
@@ -85,7 +86,11 @@ def retrive_MAC_digits(mac):
    ValueError gets raises in case that the `mac` does
    not fulfill the requirements to be valid.
    """
-    plain_mac = _strip_separator_from_mac(mac)
+    try:
+        plain_mac = _strip_separator_from_mac(mac)
+    except (AttributeError, TypeError): # not a string
+        raise ValueError('Invalid MAC %s (not a string)' % mac)
+        
     if _is_hexnumber(plain_mac):
         hexpairs = zip(plain_mac[::2],
                        plain_mac[1::2])

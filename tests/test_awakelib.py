@@ -4,6 +4,7 @@ import unittest
 import string
 
 from awakelib import utils
+from awakelib import wol
 
 class TestMACFormat(unittest.TestCase):
 
@@ -74,10 +75,33 @@ class TestUtils(unittest.TestCase):
 class TestWOL(unittest.TestCase):
 
     def test_invalid_mac(self):
-        raise NotImplementedError()
+        macs = ['12:da:as:12:11:22',
+                '12:da:as:12:11:22',
+                '12daas121122',
+                '12daaf12112',
+                'fffffffffffff', # 13 digits
+                'ff:ff:ff:ff@ff',
+                '11;11;11;11;4G',
+                111111111111,
+                1, '']
+        for mac in macs:
+            self.assertRaises(ValueError, wol.send_magic_packet, mac)
 
     def test_invalid_broadcast(self):
-        raise NotImplementedError()
+        invalid_broadcasts = ['0.1.1.1.1',
+                              '0.2.3.4.5',
+                              '255.255.255.256',
+                              '1.5.2.300']
+        for bc in invalid_broadcasts:
+            try:
+                wol.send_magic_packet('11:11:11:11:11:11', bc)
+            except ValueError:
+                e = utils.fetch_last_exception()
+                self.assertIn('Invalid broadcast', e.args[0])
+            else:
+                emsg = "The broadcast '%s' should not pass the test! " % bc
+                raise AssertionError(emsg)
+            
 
     def test_invalid_dest(self):
         raise NotImplementedError()
