@@ -4,4 +4,6 @@
 *orig
 \#*
 build
+dist
+MANIFEST
 src/awake.egg-info/
