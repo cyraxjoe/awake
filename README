@@ -92,7 +92,7 @@ In case that you want to run the tests in python < 2.7, you will need the
 The general recommended process to develop is using `virtualenv`_ and after creating the
 environ just run::
 
-    ./environ/bin/python setup.py develop
+    ./environ/bin/python setup.py install
     ./environ/bin/python -m unittest discover 
 
 

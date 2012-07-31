@@ -1,7 +1,6 @@
 import os
 
-from setuptools import setup
-
+from distutils.core import setup  
 
 repodir = os.path.dirname(os.path.realpath(__file__))
 readme = open(os.path.join(repodir, 'README.rst'))
