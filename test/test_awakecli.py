@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import difflib
 import unittest
 import subprocess
 
@@ -18,7 +19,7 @@ class TestCli(unittest.TestCase):
     def setUp(self):
         self.awake_path = \
                  os.path.join(os.path.dirname(sys.executable),
-                              'awake.py')
+                              'awake')
         
 
     def _execute(self, *args):
@@ -28,7 +29,7 @@ class TestCli(unittest.TestCase):
     
     def test_invalid_options(self):
         cmdargs = ['-x']
-        expected_output = 'awake.py: error: no such option: -x'
+        expected_output = 'awake: error: no such option: -x'
         
         try:
            self.assertEqual(self._execute(*cmdargs), None)
@@ -60,10 +61,8 @@ class TestCli(unittest.TestCase):
                 '1c:6f:66:31:e2:53',
                 '1c:6f:66:31:e2:5X', # badmac
                 '1c:6f:66:31:e2:11']
-        
-        expoutput = 'Invalid MAC 1c:6f:66:31:e2:5X'
-        self.assertIn(expoutput, self._execute(*macs))
-    
+        self.assertRaises(subprocess.CalledProcessError, self._execute, *macs)
+
     def test_quiet_option(self):
         sample_mac = '1c:6f:66:31:e2:5f'
         cmdargs = ['-q', sample_mac]
@@ -74,7 +73,7 @@ class TestCli(unittest.TestCase):
 
     def test_help_option(self):
         exp_output = \
-        """Usage: awake.py [options] MAC1 [MAC2 MAC3 MAC...]
+        r"""Usage: awake [options] MAC1 [MAC2 MAC3 MAC...]
 
 Options:
   --version             show program's version number and exit
@@ -86,13 +85,23 @@ Options:
                         Destination ip/domain to connect and send the packet,
                         by default use broadcast.
   -f FILE, --file=FILE  Use a file with the list of macs, separated with -s,
-                        by default \\n.
+                        by default \n. If any mac (line where -s \n), have the
+                        "#" character, any following character is considered a
+                        comment.
   -s SEPARATOR, --separator=SEPARATOR
                         Pattern to be use as a separator with the -f option.
+                        (Default \n)
   -q, --quiet           Do not output informative messages.
 """
         output = self._execute('--help')
-        self.assertEqual(output, exp_output)
+        try:
+            self.assertEqual(output, exp_output)
+        except AssertionError:
+            sys.stderr.write('\n\n\n')
+            sys.stderr.write(''.join((difflib.unified_diff(output, exp_output, 
+                                                           fromfile='a', tofile='b'))))
+            sys.stderr.write('\n\n\n')
+            raise 
 
 
     def test_dest_option(self):
