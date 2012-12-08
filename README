@@ -1,13 +1,13 @@
 Awake
-==================================================================
-*Short program (library) to "wake on lan" a remote host.*
+======
+*Command and library to "wake on lan" a remote host.*
 
 If you  want to know something more about the WoL stuff check 
 `the wikipedia page`_.
 ::
-   
-    Usage: awake.py [options] MAC1 [MAC2 MAC3 MAC...]
-    
+
+    Usage: awake [options] MAC1 [MAC2 MAC3 MAC...]
+
         Options:
           --version             show program's version number and exit
           -h, --help            show this help message and exit
@@ -15,28 +15,44 @@ If you  want to know something more about the WoL stuff check
           -b BROADCAST, --broadcast=BROADCAST
                                 Broadcast ip of the network. (Default 255.255.255.255)
           -d DESTINATION, --destination=DESTINATION
-	                        Destination ip/domain to connect and send the packet,
-				by default use broadcast.
+                                Destination ip/domain to connect and send the packet,
+                                by default use broadcast.
           -f FILE, --file=FILE  Use a file with the list of macs, separated with -s,
-                                by default \n.
+                                by default \n. If any mac (line where -s \n), have the
+                                "#" character, any following character is considered a
+                                comment.
           -s SEPARATOR, --separator=SEPARATOR
                                 Pattern to be use as a separator with the -f option.
+				(Default \n)
           -q, --quiet           Do not output informative messages.
+        
 
 CLI Examples
 ------------
 
-*Wake-on-lan a group of computers in the current network*::
+**Wake-on-lan a group of computers in the current network**::
 
-    awake.py MAC1 MAC2 MAC3 MAC4 MACn
+    awake 1c:6f:65:31:aa:5f 1c6c2531e051 3f.6c.25.31.e0.55 3b-6c-21-31-e0-41
 
 which is equivalent to::
 
-    awake.py -f ~/list_of_macs
+    awake -f ~/list_of_macs
 
-and in the file `list_of_macs` have one MAC per line or use the `-s` option.
+and in the file ``list_of_macs`` have one MAC per line or use the ``-s`` option.
 
-*Wake-on-lan a computer or group of computers in a external network*
+``list_of_macs`` content::
+
+    1c:6f:65:31:aa:5f # web1
+    1c6c2531e051      # web2
+    # The rest
+    3f.6c.25.31.e0.55
+    3b-6c-21-31-e0-41
+
+The format of the MAC is flexible in the sense that can use any character to group
+the digits of the MAC, except for the reserved character *#* for comments.
+
+
+**Wake-on-lan a computer or group of computers in a external network**
 
 For this situation, you need to forward a port in your router, for example to
 forward 9999 to 9 in the local network o 7777 to 7, check the documentation if 
@@ -44,23 +60,26 @@ your router or modem. After the port has been configured you can use `DDNS`_
 to have a reference to the current ip address of your router/modem and use awake
 in this way::
 
-    awake.py -a myhouse.homedns.com -p 9999 -f ~/file_with_my_macs 
+    awake -a myhouse.homedns.com -p 9999 -f ~/file_with_my_macs 
    
-or use any other option, the important here is to use the `-a` and `-p` options 
+or use any other option, the important here is to use the ``-a`` and ``-p`` options 
 to specify the destination to send the magic packet.
+
+**Alternative method to invoke awake**
+
+Awake can be used calling the module directly from python::
+
+    python -m awake 
+
+Is the same interface as the installed script ``awake``, this is very useful in
+platforms like windows, when the `PythonXX/Scripts` is not set in the `PATH`.
 
 
 As a library
 ------------
 
-.. WARNING::
-
-   You should be aware that the current readme file is exposed in the
-   github page and in the `pypi`_ page, but please refer to `pypi`_,
-   to make sure that the api and the version are consistent.
-
-The real functionality of the wake-on-lan is provided from a short function 
-that is implemented in the provided module `awakelib.wol`::
+The real functionality of the wake-on-lan is provided from a small function 
+that is implemented in the provided module ``awake.wol``::
 
     send_magic_packet(mac, broadcast='255.255.255.255', dest=None, port=9)
         Send  a "magic packet" to the given destination mac to wake up 
@@ -70,7 +89,7 @@ that is implemented in the provided module `awakelib.wol`::
 Apart from the awake script the WOL functionality can be easily integrated
 in your python programs with a simple call to the function like::
 
-    from awakelib import wol
+    from awake import wol
 
     def sysadmin_function_x(mac, *args):
         # some stuff...

@@ -1,23 +1,9 @@
-#Awake: Short program (library) to "wake on lan"  a remote host.
-#    Copyright (C) 2012  Joel Juvenal Rivera Rivera rivera@joel.mx
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License version 3
-#    as published by the Free Software Foundation.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 import re
 
+# Broadcast regex.
 _broregx = r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'\
           r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'
-
 brorex = re.compile(_broregx)
 
 def _split_file(fname, sep='\n'):
@@ -25,13 +11,11 @@ def _split_file(fname, sep='\n'):
     content separated with `sep`.
     Basically `return file.read().split(sep)`"""
     chunks = []
-    
     file_ = open(fname)
     for chunk in file_.read().split(sep):
         if chunk:
             chunks.append(chunk.strip())
-    file_.close()
-    
+    file_.close()    
     return chunks
 
 
@@ -47,10 +31,9 @@ def _strip_separator_from_mac(mac):
     # the right length in a character context.
     if sys.version_info[0] == 2:
         mac = mac.decode('utf-8')
-
-    if len(mac) == 12:
+    if len(mac) == 12:  # is the full mac, without separators.
         return mac
-    elif len(mac) == 12 + 5:
+    elif len(mac) == 12 + 5:  # it has a separator (5 separators)
         separator = mac[2]
         return mac.replace(separator, '')
     else:
@@ -100,13 +83,29 @@ def retrive_MAC_digits(mac):
     
         
 def fetch_macs_from_file(file_with_macs, sep):
+    """Read the macs from the specified path at *files_with_macs* using
+    *sep* as a separator.
+    
+    If any mac (line for the most common case where *sep*=\n)
+    have the "#" character, any following character is considered a
+    comment until *sep*, this allows in-line comments or just a bunch of
+    lines with comments.
+    """
     macs = []
     try:
-        macs += _split_file(file_with_macs, sep)
+        for line in _split_file(file_with_macs, sep):
+            if line.startswith('#'): # is a comment
+                continue
+            else:
+                comtidx = line.find('#')  # look for in-line comments
+                if comtidx > -1:
+                    mac = line[:comtidx].strip()  # remove the comment
+                else:
+                    mac = line
+            macs.append(mac)
     except Exception:
         exc = fetch_last_exception()
         errmsg = 'Unable to parse the file %s: %s' % (file_with_macs, exc)
         raise Exception(errmsg)
-            
     return macs
             

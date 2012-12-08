@@ -1,0 +1,24 @@
+Awake Changelog
+===============
+
+
+Version 1.0  (2012-12-07)
+--------------------------
+
+ - Add support for python 3.
+ - Add support for comments in the files to read the MACs.
+ - Add a more flexible format for the mac specification.
+ - Rename script awake.py to awake.
+ - Add support for `python -m awake` as an alternative to the awake script.
+ - Add test suite.
+ - Fix exit status to 1 in case of any error.
+ - Bugfix in setup.py which it was trying to read from README.rst  instead of README.
+
+Version 0.7.1 (2011-12-18)
+---------------------------
+ - Add support to read MACS from file.
+
+Version 0.6.1 (2011-05-17)
+--------------------------
+ - First release
+

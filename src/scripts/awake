@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+import awake
+
+if __name__ == '__main__':
+    awake.cli.main()
