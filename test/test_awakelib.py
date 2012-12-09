@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 import unittest
 import string
+import socket
 
-from awakelib import utils
-from awakelib import wol
+from awake import utils, wol
 
 class TestMACFormat(unittest.TestCase):
 
@@ -14,11 +15,13 @@ class TestMACFormat(unittest.TestCase):
                           utils.retrive_MAC_digits,
                           test_mac)
 
+
     def test_too_long(self):
         test_mac = 'ff:ff:11:11:11:00:ff'
         self.assertRaises(ValueError,
                           utils.retrive_MAC_digits,
                           test_mac)
+
 
     def test_too_short(self):
         test_mac = 'ff:FF:11:11:11'
@@ -26,16 +29,19 @@ class TestMACFormat(unittest.TestCase):
                           utils.retrive_MAC_digits,
                           test_mac)
 
+
     def test_junk_bytes(self):
         test_mac = os.urandom(40)
         self.assertRaises(ValueError,
                           utils.retrive_MAC_digits,
                           test_mac)
 
+
     def test_lowercase(self):
         test_mac = 'ff:ff:ff:ff:ff:ff'
         hexdigits = utils.retrive_MAC_digits(test_mac)
         self.assertEqual(hexdigits, ['ff'] * 6)
+
         
     def test_uppercase(self):
         test_mac = 'FF:FF:FF:FF:FF:FF'
@@ -56,6 +62,7 @@ class TestMACFormat(unittest.TestCase):
             hexdigits = utils.retrive_MAC_digits(test_mac)
             self.assertEqual(hexdigits, sample_mac)
 
+
     def test_ascii_chars_as_separator(self):
         self._test_chars(string.ascii_letters)
         
@@ -69,10 +76,42 @@ class TestMACFormat(unittest.TestCase):
         
         
 class TestUtils(unittest.TestCase):
-    pass
+
+    def __test_py2_fetch_last_exception(self):
+        message = 'Test Message'
+        try:
+            raise Exception(message)
+        except Exception, exep:
+            utilexep = utils.fetch_last_exception()
+            self.assertEquals(utilexep, exep)
+
+
+    def __test_py3_fetch_last_exception(self):
+        message = 'Test Message'
+        try:
+            raise Exception(message)
+        except Exception as exep:
+            utilexep = utils.fetch_last_exception()
+            self.assertEquals(utilexep, exep)
+
+
+    def test_fetch_last_exception(self):
+        if sys.version_info[0] == 2:
+            self.__test_py2_fetch_last_exception()
+        elif sys.version_info[0] == 3:
+            self.__test_py3_fetch_last_exception()
+        else:
+            raise Exception('This python version is not supported.')
+
+    
+
 
 
 class TestWOL(unittest.TestCase):
+
+    def setUp(self):
+        self.sample_mac = '1c:6f:66:31:e2:5f'
+
 
     def test_invalid_mac(self):
         macs = ['12:da:as:12:11:22',
@@ -86,6 +125,7 @@ class TestWOL(unittest.TestCase):
                 1, '']
         for mac in macs:
             self.assertRaises(ValueError, wol.send_magic_packet, mac)
+
 
     def test_invalid_broadcast(self):
         invalid_broadcasts = ['0.1.1.1.1',
@@ -104,9 +144,15 @@ class TestWOL(unittest.TestCase):
             
 
     def test_invalid_dest(self):
-        raise NotImplementedError()
+        invalid_dest = ['192.168.0.256',
+                        '-1.0.0.0.1',
+                        '255.256.255.255']
+        for dest in invalid_dest:
+            self.assertRaises(socket.gaierror, wol.send_magic_packet,
+                              self.sample_mac, dest=dest)
 
     def test_invalid_port(self):
-        raise NotImplementedError()
-    
-    
+        for p in [-1, -2, -3, 65536, 65537, 65538]:
+            self.assertRaises(OverflowError, wol.send_magic_packet,
+                              self.sample_mac, port=p)
+        

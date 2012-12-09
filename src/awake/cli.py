@@ -22,8 +22,8 @@ def _build_cliparser():
             'separated with -s, by default \\n. ' \
             'If any mac (line where -s \\n), have the "#" character, ' \
             'any following character is considered a comment.'
-    parser.add_option('-f', '--file', dest='file', type='string', 
-                      help=fhelp)
+    parser.add_option('-f', '--file', dest='file',  action='append',
+                      default=[], help=fhelp)
     shelp = 'Pattern to be use as a separator with the -f option. (Default \\n)'
     parser.add_option('-s', '--separator', dest='separator', type='string',
                       default='\n', help=shelp)
@@ -38,15 +38,14 @@ def _get_macs(options, args):
     if not options.file and len(args) < 1:
         errmsg = 'Requires at least one MAC address or a list of MAC (-f).'
         raise Exception(errmsg)    
-    if len(args): 
-        macs += args
-    if options.file: 
-        try:
-            macs += awake.utils.fetch_macs_from_file(options.file,
+    macs += args
+    try:
+        for file_with_macs in options.file:
+            macs += awake.utils.fetch_macs_from_file(file_with_macs,
                                                      options.separator)
-        except Exception:
-            exep = awake.utils.fetch_last_exception()
-            sys.stderr.write('%s\n' % exep.args)
+    except Exception:
+        exep = awake.utils.fetch_last_exception()
+        sys.stderr.write('%s\n' % exep.args)
     return macs
         
 
@@ -71,8 +70,10 @@ def _send_packets(macs, broadcast, destination, port, quiet_mode):
             no_errors = False
         else:
             if not quiet_mode:
-                print('Sending magic packet to %s with MAC  %s and port %d' % \
-                      (broadcast, mac, port))
+                if destination is None:
+                    destination = broadcast
+                print('Sending magic packet to %s with broadcast %s MAC %s port %d' % \
+                      (destination, broadcast, mac, port))
     return no_errors
 
 
