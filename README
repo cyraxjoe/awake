@@ -101,9 +101,11 @@ Tests
 -----
 
 The tests are designed to be executed with the python unittest module,
-you can run the tests from the root of the repository with this command::
+you can run the tests from the folder `test`::
 
+    cd test
     python -m unittest discover 
+
 
 In case that you want to run the tests in python < 2.7, you will need the 
 `unittest2`_ module.

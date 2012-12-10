@@ -9,6 +9,7 @@ from subprocess import CalledProcessError
 
 from awake.utils import fetch_last_exception
 
+import _test_utils
 # Always decode the output of the errors for  py3 compatibility.
 
 class TestCli(unittest.TestCase):
@@ -56,15 +57,8 @@ class TestCli(unittest.TestCase):
         """
         if not lines:
             lines = (self.sample_mac, )
-        _, path = tempfile.mkstemp('.awaketest')
-        try:
-            file_ = open(path, 'w')
-            for line in lines:
-                file_.write('%s\n' % line)
-        finally:
-            file_.close()
-        return path
-
+        return _test_utils.create_sample_file(*lines)
+            
 
     def _execute(self, *args):
         cmd = [self.awake_path, ] + list(args)

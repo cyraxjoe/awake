@@ -14,17 +14,21 @@ def _split_file(fname, sep='\n'):
     file_ = open(fname)
     try:
         for chunk in file_.read().split(sep):
-            if chunk:
-                chunks.append(chunk.strip())
+            schunk = chunk.strip()
+            if schunk:
+                chunks.append(schunk)
     finally:
         file_.close()    
     return chunks
 
 
 def _is_hexnumber(number):
+    """Evalute True/False the string `number` in case that the type
+    is not valid (a string) the method returns False
+    """
     try:
         return bool(int(number, 16))
-    except ValueError:
+    except (ValueError, TypeError):
         return False
 
     
