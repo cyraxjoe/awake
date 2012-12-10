@@ -119,6 +119,29 @@ class TestUtils(unittest.TestCase):
         env['__test_fetch_last_exception']()
 
     
+    def test__split_file(self):
+        raise NotImplementedError()
+
+
+    def test__is_hexnumber(self):
+        raise NotImplementedError()
+
+
+    def test__strip_separator_from_mac(self):
+        raise NotImplementedError()
+
+        
+    def test_is_valid_broadcast_ip(self):
+        raise NotImplementedError()
+
+
+    def test_retrive_MAC_digits(self):
+        raise NotImplementedError()
+
+
+    def test_fetch_macs_from_file(self):
+        raise NotImplementedError()
+    
 
 
 

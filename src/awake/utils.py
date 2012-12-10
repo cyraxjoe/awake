@@ -12,10 +12,12 @@ def _split_file(fname, sep='\n'):
     Basically `return file.read().split(sep)`"""
     chunks = []
     file_ = open(fname)
-    for chunk in file_.read().split(sep):
-        if chunk:
-            chunks.append(chunk.strip())
-    file_.close()    
+    try:
+        for chunk in file_.read().split(sep):
+            if chunk:
+                chunks.append(chunk.strip())
+    finally:
+        file_.close()    
     return chunks
 
 
