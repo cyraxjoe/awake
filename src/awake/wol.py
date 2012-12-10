@@ -25,9 +25,11 @@ def send_magic_packet(mac, broadcast='255.255.255.255', dest=None, port=9):
     magicpkt = magic_header + magic_body
     sok = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sok.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    if dest is None:
-        sok.connect((broadcast, port))
-    else:
-        sok.connect((dest, port))
-    sok.send(magicpkt)
-    sok.close()
+    try:
+        if dest is None:
+            sok.connect((broadcast, port))
+        else:
+            sok.connect((dest, port))
+        sok.send(magicpkt)
+    finally:
+        sok.close()

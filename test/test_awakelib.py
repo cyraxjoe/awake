@@ -77,31 +77,46 @@ class TestMACFormat(unittest.TestCase):
         
 class TestUtils(unittest.TestCase):
 
-    def __test_py2_fetch_last_exception(self):
+    __test_py2_fetch_last_exception = """
+    def __test_fetch_last_exception():
         message = 'Test Message'
         try:
             raise Exception(message)
         except Exception, exep:
             utilexep = utils.fetch_last_exception()
-            self.assertEquals(utilexep, exep)
+            self.assertEqual(utilexep, exep)""".strip()
 
-
-    def __test_py3_fetch_last_exception(self):
+    __test_py3_fetch_last_exception = """
+    def __test_fetch_last_exception():
         message = 'Test Message'
         try:
             raise Exception(message)
         except Exception as exep:
             utilexep = utils.fetch_last_exception()
-            self.assertEquals(utilexep, exep)
-
+            self.assertEqual(utilexep, exep)""".strip()
 
     def test_fetch_last_exception(self):
+        """Notice the hackish approach of using `eval`!, because of the valid
+        reason (in my opinion) of version incompatibility on how the
+        exception object get referenced in the except clause and validate according
+        to the python version and avoid the SyntaxError.
+        """
+        def  __test_fetch_last_exception():
+            raise Exception('This function need to be redefined '
+                            'to the right version.')
+        
         if sys.version_info[0] == 2:
-            self.__test_py2_fetch_last_exception()
+            testcode = compile(self.__test_py2_fetch_last_exception,
+                               __name__, "exec")
         elif sys.version_info[0] == 3:
-            self.__test_py3_fetch_last_exception()
+            testcode = compile(self.__test_py3_fetch_last_exception,
+                               __name__, "exec")
         else:
             raise Exception('This python version is not supported.')
+        env = {'self': self, 'utils': utils}
+        env['__test_fetch_last_exception'] = __test_fetch_last_exception        
+        eval(testcode, env)
+        env['__test_fetch_last_exception']()
 
     
 
