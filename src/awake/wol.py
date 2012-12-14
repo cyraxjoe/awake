@@ -6,12 +6,11 @@ from awake import utils
 
 def send_magic_packet(mac, broadcast='255.255.255.255', dest=None, port=9):
     """Send  a "magic packet" to the given destination mac to wakeup
-    the host, if `dest` is not specified then the packed is broadcasted.
+    the host, if `dest` is not specified then the packet is broadcasted.
 
-    If the `mac` address is unable to be parsed
-    `ValueError` get raised. (yes it rhymes).
+    If the `mac` address can't be parsed raise `ValueError`.
 
-    If `dest` is not a valid domain name or ip raise socket.error.
+    If `dest` is not a valid domain name or ip raise `socket.error`.
     """
     try:
         if not utils.is_valid_broadcast_ip(broadcast):

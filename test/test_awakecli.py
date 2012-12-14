@@ -132,7 +132,8 @@ Options:
   -f FILE, --file=FILE  Use a file with the list of macs, separated with -s,
                         by default \n. If any mac (line where -s \n), have the
                         "#" character, any following character is considered a
-                        comment.
+                        comment. Can be used multiple times for multiple
+                        files.
   -s SEPARATOR, --separator=SEPARATOR
                         Pattern to be use as a separator with the -f option.
                         (Default \n)

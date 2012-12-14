@@ -20,12 +20,47 @@ If you  want to know something more about the WoL stuff check
           -f FILE, --file=FILE  Use a file with the list of macs, separated with -s,
                                 by default \n. If any mac (line where -s \n), have the
                                 "#" character, any following character is considered a
-                                comment.
+                                comment. Can be used multiple times for multiple
+                                files.
           -s SEPARATOR, --separator=SEPARATOR
                                 Pattern to be use as a separator with the -f option.
 				(Default \n)
           -q, --quiet           Do not output informative messages.
+
+
+Requirements
+-------------
+
+Any cpython (common python) implementation  from 2.4 to 3.X.
+
+Probably it also works with jython, ironpython and pypy but I haven't
+personally tested on those implementations.
         
+
+Installation
+------------
+
+    pip install awake
+
+Or with the old `easy_install`
+
+    easy_install awake
+
+Or with the source
+
+    python setup.py install
+
+
+
+Upgrading from 0.X to 1.0
+--------------------------
+
+Make sure the previous CLI script `awake.py` gets removed from the script installation
+path after the upgrading, e.g. in linux `/usr/bin/` the new cli interface is
+just `awake` and  if the file `awake.py` exists at the same level of the script 
+then the new `awake` going to try to fetch the required modules from the 
+old cli script `awake.py`.
+
 
 CLI Examples
 ------------

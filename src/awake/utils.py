@@ -23,8 +23,8 @@ def _split_file(fname, sep='\n'):
 
 
 def _is_hexnumber(number):
-    """Evalute True/False the string `number` in case that the type
-    is not valid (a string) the method returns False
+    """Evalute the string `number` in case that the type
+    is not valid the method returns False otherwise True.
     """
     try:
         return bool(int(number, 16))
@@ -72,7 +72,7 @@ def retrive_MAC_digits(mac):
             11::11:11:11:11:11
 
    Return each two digits in a list.
-   ValueError gets raises in case that the `mac` does
+   Raise ValueError in case that the `mac` does
    not fulfill the requirements to be valid.
    """
     try:
@@ -86,7 +86,7 @@ def retrive_MAC_digits(mac):
         return [''.join(digit) for digit in hexpairs]
     else:
         raise ValueError('Invalid MAC %s' % mac)
-    
+
         
 def fetch_macs_from_file(file_with_macs, sep):
     """Read the macs from the specified path at *files_with_macs* using
@@ -117,4 +117,3 @@ def fetch_macs_from_file(file_with_macs, sep):
         errmsg = 'Unable to parse the file %s: %s' % (file_with_macs, exc)
         raise Exception(errmsg)
     return macs
-            

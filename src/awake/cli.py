@@ -21,7 +21,8 @@ def _build_cliparser():
     fhelp = 'Use a file with the list of macs, ' \
             'separated with -s, by default \\n. ' \
             'If any mac (line where -s \\n), have the "#" character, ' \
-            'any following character is considered a comment.'
+            'any following character is considered a comment. ' \
+            'Can be used multiple times for multiple files.'
     parser.add_option('-f', '--file', dest='file',  action='append',
                       default=[], help=fhelp)
     shelp = 'Pattern to be use as a separator with the -f option. (Default \\n)'
@@ -93,5 +94,3 @@ def main():
     else:
         _notify_error_and_finish('Unable to acquire any mac address',
                                  cliparser)
-
-
