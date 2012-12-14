@@ -96,6 +96,9 @@ def fetch_macs_from_file(file_with_macs, sep):
     have the "#" character, any following character is considered a
     comment until *sep*, this allows in-line comments or just a bunch of
     lines with comments.
+
+    This function does not validate each mac just strip any comment and appened
+    to a list.
     """
     macs = []
     try:

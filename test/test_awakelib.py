@@ -196,13 +196,27 @@ class TestUtils(unittest.TestCase):
             self.assertIs(utils.is_valid_broadcast_ip(address), False)
         for address in valid_broadcasts:
             self.assertIs(utils.is_valid_broadcast_ip(address), True)
-            
-    
+                
 
     def test_fetch_macs_from_file(self):
-        raise NotImplementedError()
+        
+        slines = ['11.11.11.11.11 # one',
+                  '22.11.11.11.11 # two',
+                  'Invalid mac # thats ok',
+                  '# line with comment']
+        
+        expmacs = ['11.11.11.11.11',
+                   '22.11.11.11.11',
+                   'Invalid mac']
+        separators = [':', '*', '!', '\n']
+        for sep in separators:
+            sfile = _test_utils.create_sample_file(sep.join(slines))
+            try:
+                for mac in utils.fetch_macs_from_file(sfile, '\n'):
+                    self.assertIn(mac, expmacs)
+            finally:
+                os.remove(sfile)
     
-
 
 
 class TestWOL(unittest.TestCase):
