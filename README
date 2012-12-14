@@ -40,13 +40,22 @@ personally tested on those implementations.
 Installation
 ------------
 
+::
+
     pip install awake
 
+
 Or with the old `easy_install`
+
+::
+
 
     easy_install awake
 
 Or with the source
+
+::
+
 
     python setup.py install
 
