@@ -104,9 +104,9 @@ your router or modem. After the port has been configured you can use `DDNS`_
 to have a reference to the current ip address of your router/modem and use awake
 in this way::
 
-    awake -a myhouse.homedns.com -p 9999 -f ~/file_with_my_macs 
+    awake -d myhouse.homedns.com -p 9999 -f ~/file_with_my_macs 
    
-or use any other option, the important here is to use the ``-a`` and ``-p`` options 
+or use any other option, the important here is to use the ``-d`` and ``-p`` options 
 to specify the destination to send the magic packet.
 
 **Alternative method to invoke awake**
