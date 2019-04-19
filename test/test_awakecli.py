@@ -9,7 +9,7 @@ from subprocess import CalledProcessError
 
 from awake.utils import fetch_last_exception
 
-import _test_utils
+from . import _test_utils
 # Always decode the output of the errors for  py3 compatibility.
 
 class TestCli(unittest.TestCase):
@@ -30,7 +30,7 @@ class TestCli(unittest.TestCase):
         finally:
             os.remove(path)
 
-            
+
     def _expect_error_and_assert_output(self, expoutput, *cmdargs):
         """Execute the subprocess command expecting an error and then
         validate that the `expoutput` is in the output of the command.
@@ -48,7 +48,7 @@ class TestCli(unittest.TestCase):
         else:
             raise Exception('The process does not rise the '\
                             'expected exception CalledProcessError.')
-            
+
 
     def _create_sample_file(self, *lines):
         """General abstraction to be used with the -f commands.
@@ -58,13 +58,13 @@ class TestCli(unittest.TestCase):
         if not lines:
             lines = (self.sample_mac, )
         return _test_utils.create_sample_file(*lines)
-            
+
 
     def _execute(self, *args):
         cmd = [self.awake_path, ] + list(args)
         return subprocess.check_output(cmd, stderr=subprocess.STDOUT).decode()
 
-        
+
     def _safe_execute(self, *args):
         """Execute the command and in case that a subprocess error show
         the outout of the executed command.
@@ -77,7 +77,7 @@ class TestCli(unittest.TestCase):
             exp.message = exp.output
             raise exp
 
-    
+
     def test_invalid_options(self):
         cmdargs = ['-x',]
         expected_output = 'awake: error: no such option: -x'
@@ -138,16 +138,20 @@ Options:
                         Pattern to be use as a separator with the -f option.
                         (Default \n)
   -q, --quiet           Do not output informative messages.
+  -i BIND_IP, --bind-ip=BIND_IP
+                        Bind to the specific IP address before sending the
+                        magic packet. This will route the WOL packet into the
+                        specific NIC.
 """
         output = self._execute('--help')
         try:
             self.assertEqual(output, exp_output)
         except AssertionError:
             sys.stderr.write('\n\n\n')
-            sys.stderr.write(''.join((difflib.unified_diff(output, exp_output, 
+            sys.stderr.write(''.join((difflib.unified_diff(output, exp_output,
                                                            fromfile='a', tofile='b'))))
             sys.stderr.write('\n\n\n')
-            raise 
+            raise
 
 
     def test_dest_option(self):
@@ -169,7 +173,7 @@ Options:
         finally:
             os.remove(path)
 
-            
+
     def test_file_option_and_args(self):
         path = self._create_sample_file()
         othermac = '%s:ff' % self.sample_mac[:-3]
@@ -194,7 +198,7 @@ Options:
                 self.assertIn(expmsg, output)
         finally:
             os.remove(path)
-            
+
 
     def test_multiple_file_options(self):
         mac_one = self.sample_mac
@@ -211,7 +215,7 @@ Options:
                 os.remove(sone_path)
             finally:
                 os.remove(stwo_path)
-        
+
 
     def test_file_with_in_line_comments(self):
         lines = ['%s  # this is a sample comment' % self.sample_mac, ]
@@ -223,7 +227,7 @@ Options:
                  self.sample_mac]
         self.__test_file_with_lines(lines, self.sample_mac)
 
-        
+
     def test_file_with_mixed_comments(self):
         othermac = '222222222222'
         lines = ['# this is full line of comment',
@@ -236,7 +240,7 @@ Options:
         path = tempfile.mktemp('.awaketest')
         args = ['-f', path]
         self._expect_error_and_assert_output('Unable to parse the file', *args)
-        
+
 
     def test_unable_to_read_file(self):
         path = self._create_sample_file()
@@ -248,7 +252,7 @@ Options:
         finally:
             os.remove(path)
 
-    
+
     def test_bad_macs_in_file(self):
         good_macs = [self.sample_mac,
                      '111111111111']
@@ -264,4 +268,3 @@ Options:
             self._expect_error_and_assert_output(messages, *args)
         finally:
             os.remove(path)
-    

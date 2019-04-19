@@ -8,7 +8,7 @@ import random
 
 from awake import utils, wol
 
-import _test_utils
+from . import _test_utils
 
 INVALID_BROADCASTS = ['0.1.1.1.1',
                       '0.2.3.4.5',
@@ -52,12 +52,12 @@ class TestMACFormat(unittest.TestCase):
         hexdigits = utils.retrive_MAC_digits(test_mac)
         self.assertEqual(hexdigits, ['ff'] * 6)
 
-        
+
     def test_uppercase(self):
         test_mac = 'FF:FF:FF:FF:FF:FF'
         hexdigits = utils.retrive_MAC_digits(test_mac)
         self.assertEqual(hexdigits, ['FF'] * 6)
-        
+
 
     def test_no_separator(self):
         test_mac = '111111111111'
@@ -75,7 +75,7 @@ class TestMACFormat(unittest.TestCase):
 
     def test_ascii_chars_as_separator(self):
         self._test_chars(string.ascii_letters)
-        
+
 
     def test_non_ascii_chars_as_separator(self):
         uchars = ['ñ', 'ಠ', '¡', '¿',
@@ -83,8 +83,8 @@ class TestMACFormat(unittest.TestCase):
                   'ꍿ', 'ꡲ', '⬬', 'ﻷ',
                   'ꆔ', 'ﭼ', 'Š', '𝚡','㌂']
         self._test_chars(uchars)
-        
-        
+
+
 class TestUtils(unittest.TestCase):
     """Test the function of the module awake.utils except retrive_MAC_digits
     which is tested in TestMACFormat.
@@ -116,7 +116,7 @@ class TestUtils(unittest.TestCase):
         """
         def  __test_fetch_last_exception():
             raise Exception('This function need to be redefined '
-                            'to the right version.')        
+                            'to the right version.')
         if sys.version_info[0] == 2:
             testcode = compile(self.__test_py2_fetch_last_exception,
                                __name__, "exec")
@@ -126,11 +126,11 @@ class TestUtils(unittest.TestCase):
         else:
             raise Exception('This python version is not supported.')
         env = {'self': self, 'utils': utils}
-        env['__test_fetch_last_exception'] = __test_fetch_last_exception        
+        env['__test_fetch_last_exception'] = __test_fetch_last_exception
         eval(testcode, env)
         env['__test_fetch_last_exception']()
 
-    
+
     def test__split_file(self):
         separators = ['|', '%', '!', '*', ':', ',', '\n']
         for separator in separators:
@@ -186,7 +186,7 @@ class TestUtils(unittest.TestCase):
         for invalid_mac in invalid_macs:
             self.assertRaises(ValueError, utils._strip_separator_from_mac, invalid_mac)
 
-        
+
     def test_is_valid_broadcast_ip(self):
         valid_broadcasts = ['255.255.255.255',
                             '1.1.1.1.255',
@@ -196,15 +196,15 @@ class TestUtils(unittest.TestCase):
             self.assertIs(utils.is_valid_broadcast_ip(address), False)
         for address in valid_broadcasts:
             self.assertIs(utils.is_valid_broadcast_ip(address), True)
-                
+
 
     def test_fetch_macs_from_file(self):
-        
+
         slines = ['11.11.11.11.11 # one',
                   '22.11.11.11.11 # two',
                   'Invalid mac # thats ok',
                   '# line with comment']
-        
+
         expmacs = ['11.11.11.11.11',
                    '22.11.11.11.11',
                    'Invalid mac']
@@ -216,7 +216,7 @@ class TestUtils(unittest.TestCase):
                     self.assertIn(mac, expmacs)
             finally:
                 os.remove(sfile)
-    
+
 
 
 class TestWOL(unittest.TestCase):
@@ -249,7 +249,7 @@ class TestWOL(unittest.TestCase):
             else:
                 emsg = "The broadcast '%s' should not pass the test! " % bc
                 raise AssertionError(emsg)
-            
+
 
     def test_invalid_dest(self):
         invalid_dest = ['192.168.0.256',
@@ -263,4 +263,3 @@ class TestWOL(unittest.TestCase):
         for p in [-1, -2, -3, 65536, 65537, 65538]:
             self.assertRaises(OverflowError, wol.send_magic_packet,
                               self.sample_mac, port=p)
-        
